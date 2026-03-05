@@ -1,4 +1,9 @@
 -- Databricks notebook source
+-- MAGIC %md
+-- MAGIC BRONZE
+
+-- COMMAND ----------
+
 -- DBTITLE 1,BRONZE BAIRROS
 CREATE OR REFRESH STREAMING LIVE TABLE competitor_intelligence_dev.bronze.bronze_bairros
 AS
@@ -48,7 +53,7 @@ FROM cloud_files(
 -- COMMAND ----------
 
 -- DBTITLE 1,BRONZE POPULACAO
-CREATE OR REFRESH STREAMING LIVE TABLE competitor_intelligence_dev.bronze.populacao
+CREATE OR REFRESH STREAMING LIVE TABLE competitor_intelligence_dev.bronze.bronze_populacao
 AS
 SELECT *,
 CURRENT_DATE() AS consumed_date
@@ -59,3 +64,41 @@ FROM cloud_files(
     "inferSchema", "true"
   )
 )
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC SILVER
+
+-- COMMAND ----------
+
+-- DBTITLE 1,SILVER BAIRROS
+CREATE OR REFRESH LIVE TABLE competitor_intelligence_dev.silver.silver_bairros AS
+SELECT
+  codigo AS codigo_treated,
+  UPPER(TRANSLATE(nome, 'áàãâäéèêëíìîïóòõôöúùûüç', 'aaaaaeeeeiiiiooooouuuuc')) AS nome_treated,
+  UPPER(TRANSLATE(municipio, 'áàãâäéèêëíìîïóòõôöúùûüç', 'aaaaaeeeeiiiiooooouuuuc')) AS municipio_treated,
+  uf AS uf_treated,
+  TRY_CAST(area AS DECIMAL(10, 6)) AS area_treated
+FROM
+  LIVE.bronze.bronze_bairros
+
+-- COMMAND ----------
+
+-- DBTITLE 1,SILVER CONCORRENTES
+
+
+-- COMMAND ----------
+
+-- DBTITLE 1,SILVER EVENTOS DE FLUXO
+
+
+-- COMMAND ----------
+
+-- DBTITLE 1,SILVER POPULACAO
+
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC GOLD

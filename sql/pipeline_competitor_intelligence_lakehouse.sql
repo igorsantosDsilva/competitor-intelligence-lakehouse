@@ -76,7 +76,7 @@ FROM cloud_files(
 CREATE OR REFRESH LIVE TABLE competitor_intelligence_dev.silver.silver_bairros AS
 SELECT
   codigo AS id_bairros_treated,
-  UPPER(TRANSLATE(nome, 'áàãâäéèêëíìîïóòõôöúùûüç', 'aaaaaeeeeiiiiooooouuuuc')) AS nome_treated,
+  UPPER(TRANSLATE(nome, 'áàãâäéèêëíìîïóòõôöúùûüç', 'aaaaaeeeeiiiiooooouuuuc')) AS bairro_treated,
   UPPER(TRANSLATE(municipio, 'áàãâäéèêëíìîïóòõôöúùûüç', 'aaaaaeeeeiiiiooooouuuuc')) AS municipio_treated,
   uf AS uf_treated,
   TRY_CAST(area AS DECIMAL(10, 6)) AS area_treated

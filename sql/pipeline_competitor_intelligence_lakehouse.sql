@@ -139,6 +139,7 @@ FROM
 
 -- COMMAND ----------
 
+-- DBTITLE 1,GOLD_CONCORRENTES
 CREATE OR REFRESH LIVE TABLE competitor_intelligence_dev.gold.gold_concorrentes AS
 SELECT
   c.id_concorrentes_treated AS id_concorrentes,

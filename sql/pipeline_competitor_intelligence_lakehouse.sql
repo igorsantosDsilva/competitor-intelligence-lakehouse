@@ -162,3 +162,31 @@ FROM
       ON c.id_bairros_treated = b.id_bairros_treated
     LEFT JOIN LIVE.silver.silver_populacao p
       ON b.id_bairros_treated = p.id_bairros_treated
+
+-- COMMAND ----------
+
+-- DBTITLE 1,GOLD_FLUXO_CONCORRENTES
+CREATE OR REFRESH LIVE TABLE competitor_intelligence_dev.gold.gold_fluxo_concorrentes AS
+SELECT
+
+    id_concorrentes_treated,
+
+    DAYOFWEEK(data_evento_treated) AS dia_semana,
+
+    CASE
+        WHEN HOUR(hora_evento_treated) BETWEEN 6 AND 11 THEN 'MANHA'
+        WHEN HOUR(hora_evento_treated) BETWEEN 12 AND 17 THEN 'TARDE'
+        ELSE 'NOITE'
+    END AS periodo_dia,
+
+    COUNT(*) AS total_visitas,
+    AVG(COUNT(*)) OVER(PARTITION BY id_concorrentes_treated) AS media_visitas,
+    MAX(COUNT(*)) OVER(PARTITION BY id_concorrentes_treated) AS max_visitas,
+    MIN(COUNT(*)) OVER(PARTITION BY id_concorrentes_treated) AS min_visitas
+
+FROM LIVE.silver.silver_eventos_de_fluxo
+
+GROUP BY
+    id_concorrentes_treated,
+    dia_semana,
+    periodo_dia

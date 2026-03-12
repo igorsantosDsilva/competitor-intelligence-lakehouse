@@ -106,7 +106,18 @@ FROM LIVE.bronze.bronze_concorrentes
 -- COMMAND ----------
 
 -- DBTITLE 1,SILVER EVENTOS DE FLUXO
-
+CREATE OR REFRESH LIVE TABLE competitor_intelligence_dev.silver.silver_eventos_de_fluxo AS
+SELECT
+  codigo AS codigo_evento_treated,
+  DATE(datetime) AS data_evento_treated,
+  DATE_FORMAT(datetime, 'HH:mm:ss') AS hora_evento_treated,
+  codigo_concorrente AS id_concorrentes_treated
+FROM
+  LIVE.bronze.bronze_eventos_de_fluxo
+  QUALIFY ROW_NUMBER() OVER(
+    PARTITION BY codigo, datetime, codigo_concorrente
+    ORDER BY datetime
+  ) = 1
 
 -- COMMAND ----------
 

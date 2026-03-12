@@ -122,7 +122,15 @@ FROM
 -- COMMAND ----------
 
 -- DBTITLE 1,SILVER POPULACAO
-
+CREATE OR REFRESH LIVE TABLE competitor_intelligence_dev.silver.silver_populacao AS
+SELECT
+  TRIM(codigo) AS id_bairros_treated,
+  TRY_CAST(populacao AS INT) AS populacao_treated,
+  YEAR(consumed_date) AS year,
+  MONTH(consumed_date) AS month,
+  DAY(consumed_date) AS day
+FROM
+  LIVE.bronze.bronze_populacao
 
 -- COMMAND ----------
 

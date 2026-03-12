@@ -136,3 +136,28 @@ FROM
 
 -- MAGIC %md
 -- MAGIC GOLD
+
+-- COMMAND ----------
+
+CREATE OR REFRESH LIVE TABLE competitor_intelligence_dev.gold.gold_concorrentes AS
+SELECT
+  c.id_concorrentes_treated AS id_concorrentes,
+  c.nome_estabelecimento_treated AS nome_estabelecimento,
+  c.categoria_treated AS categoria,
+  c.faixa_preco_treated AS faixa_preco,
+  c.endereco_completo_treated AS endereco_completo,
+  c.cep_treated AS cep_treated,
+  c.num_casa_treated AS num_casa,
+  c.municipio_treated AS municipio,
+  c.uf_treated AS uf,
+  b.id_bairros_treated AS id_bairros,
+  b.bairro_treated AS bairro,
+  b.area_treated AS area,
+  p.populacao_treated AS populacao,
+  p.populacao_treated / b.area_treated AS densidade_demografica
+FROM
+  LIVE.silver.silver_concorrentes c
+    LEFT JOIN LIVE.silver.silver_bairros b
+      ON c.id_bairros_treated = b.id_bairros_treated
+    LEFT JOIN LIVE.silver.silver_populacao p
+      ON b.id_bairros_treated = p.id_bairros_treated

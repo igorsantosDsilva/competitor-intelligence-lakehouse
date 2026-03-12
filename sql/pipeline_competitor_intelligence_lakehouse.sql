@@ -190,3 +190,24 @@ GROUP BY
     id_concorrentes_treated,
     dia_semana,
     periodo_dia
+
+-- COMMAND ----------
+
+-- DBTITLE 1,GOLD_DEMOGRAFIA
+CREATE OR REFRESH LIVE TABLE competitor_intelligence_dev.gold.gold_demografia_bairros AS
+SELECT
+
+    b.id_bairros_treated,
+    b.bairro_treated,
+    b.municipio_treated,
+    b.uf_treated,
+
+    b.area_treated,
+    p.populacao_treated,
+
+    p.populacao_treated / b.area_treated AS densidade_demografica
+
+FROM LIVE.silver.silver_bairros b
+
+LEFT JOIN LIVE.silver.silver_populacao p
+ON b.id_bairros_treated = p.id_bairros_treated

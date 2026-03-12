@@ -86,7 +86,22 @@ FROM
 -- COMMAND ----------
 
 -- DBTITLE 1,SILVER CONCORRENTES
-
+CREATE OR REFRESH LIVE TABLE competitor_intelligence_dev.silver.silver_concorrentes AS
+SELECT
+  codigo AS id_concorrentes_treated,
+  TRIM(UPPER(TRANSLATE(nome, 'áàãâäéèêëíìîïóòõôöúùûüç', 'aaaaaeeeeiiiiooooouuuuc'))) AS nome_estabelecimento_treated,
+  TRIM(UPPER(categoria)) AS categoria_treated,
+  TRY_CAST(faixa_preco AS TINYINT) AS faixa_preco_treated,
+  TRIM(UPPER(TRANSLATE(endereco, 'áàãâäéèêëíìîïóòõôöúùûüç', 'aaaaaeeeeiiiiooooouuuuc'))) AS endereco_completo_treated,
+  REGEXP_EXTRACT(endereco, '\\d{5}-?\\d{3}', 0) AS cep_treated,
+  REGEXP_EXTRACT(
+    REGEXP_REPLACE(endereco, '\\d{5}-?\\d{3}', ''),
+    ',\\s*(\\d+),',
+    1) AS num_casa_treated,
+  UPPER(municipio) AS municipio_treated,
+  UPPER(uf) AS uf_treated,
+  codigo_bairro AS id_bairros_treated
+FROM LIVE.bronze.bronze_concorrentes
 
 -- COMMAND ----------
 
